@@ -5,6 +5,8 @@ from PyQt5.QtWidgets import (
 )
 from PyQt5.QtGui import QPixmap
 from PyQt5.QtCore import Qt, pyqtSignal
+import tkinter as tk
+from tkinter import filedialog
 
 class SyncGraphicsView(QGraphicsView):
     zoomed = pyqtSignal(float)
@@ -93,6 +95,19 @@ class MainWindow(QMainWindow):
 
 if __name__ == '__main__':
     app = QApplication(sys.argv)
-    window = MainWindow('Mandrill_bayer_color_jpg_q25.bmp', 'Mandrill_bayer_color_jpg_q95.bmp')
-    window.show()
-    sys.exit(app.exec_())
+
+    # ファイルダイアログで画像ファイルを選択
+    root = tk.Tk()
+    root.withdraw()  # メインウィンドウを表示しない
+
+    file_paths = filedialog.askopenfilenames(
+        title="2つのファイルを選択してください",
+        filetypes=[("すべてのファイル", "*.*")]
+    )
+
+    if len(file_paths) == 2:
+        window = MainWindow(*file_paths)
+        window.show()
+        sys.exit(app.exec_())
+    else:
+        print("2つのファイルを選択してください。")

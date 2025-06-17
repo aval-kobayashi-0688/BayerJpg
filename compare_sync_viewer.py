@@ -1,5 +1,8 @@
 import sys
-from PyQt5.QtWidgets import QApplication, QMainWindow, QGraphicsView, QGraphicsScene, QHBoxLayout, QWidget
+from PyQt5.QtWidgets import (
+    QApplication, QMainWindow, QGraphicsView, QGraphicsScene,
+    QHBoxLayout, QVBoxLayout, QWidget, QLabel
+)
 from PyQt5.QtGui import QPixmap
 from PyQt5.QtCore import Qt, pyqtSignal
 
@@ -58,18 +61,34 @@ class MainWindow(QMainWindow):
         self.scene2.addPixmap(pixmap2)
         self.view2 = SyncGraphicsView(self.scene2)
 
+        # ファイル名ラベル
+        label1 = QLabel(img1_path)
+        label1.setAlignment(Qt.AlignCenter)
+        label2 = QLabel(img2_path)
+        label2.setAlignment(Qt.AlignCenter)
+
         # シグナル接続（ズーム・スクロール同期）
         self.view1.zoomed.connect(self.view2.set_zoom)
         self.view2.zoomed.connect(self.view1.set_zoom)
         self.view1.scrolled.connect(self.view2.set_scroll)
         self.view2.scrolled.connect(self.view1.set_scroll)
 
-        # レイアウト
-        layout = QHBoxLayout()
-        layout.addWidget(self.view1)
-        layout.addWidget(self.view2)
+        # 画像＋ラベルのレイアウト
+        vbox1 = QVBoxLayout()
+        vbox1.addWidget(label1)
+        vbox1.addWidget(self.view1)
+
+        vbox2 = QVBoxLayout()
+        vbox2.addWidget(label2)
+        vbox2.addWidget(self.view2)
+
+        # 横並びレイアウト
+        hbox = QHBoxLayout()
+        hbox.addLayout(vbox1)
+        hbox.addLayout(vbox2)
+
         container = QWidget()
-        container.setLayout(layout)
+        container.setLayout(hbox)
         self.setCentralWidget(container)
 
 if __name__ == '__main__':

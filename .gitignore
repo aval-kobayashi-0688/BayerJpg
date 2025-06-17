@@ -1,2 +1,4 @@
 *.bmp
 *.jpg
+bayer_test.py
+bayer_test2.py
